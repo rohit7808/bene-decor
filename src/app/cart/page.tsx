@@ -1,53 +1,46 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Container from "@/components/ui/Container";
 import CartEmpty from "@/components/cart/CartEmpty";
 import OrderSummary from "@/components/cart/OrderSummary";
-import { PRODUCTS_DATA, Product } from "@/data/products";
+import { useCart } from "@/context/CartContext";
 
-interface CartItem {
-  product: Product;
-  quantity: number;
+function CartSkeleton() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
+      <div className="lg:col-span-2 flex flex-col gap-4">
+        {Array.from({ length: 2 }).map((_, idx) => (
+          <div
+            key={idx}
+            className="p-5 rounded-2xl bg-white border border-[#E5E5E5]/80 animate-pulse flex flex-col sm:flex-row items-center gap-4 h-32"
+          >
+            <div className="w-24 h-24 bg-zinc-200 rounded-xl shrink-0" />
+            <div className="flex-1 flex flex-col gap-2 w-full">
+              <div className="h-4 w-1/4 bg-zinc-200 rounded" />
+              <div className="h-5 w-1/2 bg-zinc-200 rounded" />
+              <div className="h-4 w-1/3 bg-zinc-200 rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="w-full h-80 bg-zinc-100 rounded-2xl animate-pulse" />
+    </div>
+  );
 }
 
 export default function CartPage() {
-  // Mock initial cart items (Items 1 and 3)
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    { product: PRODUCTS_DATA[0], quantity: 1 },
-    { product: PRODUCTS_DATA[2], quantity: 2 },
-  ]);
-
-  const updateQuantity = (productId: number, newQty: number) => {
-    if (newQty < 1) return;
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity: newQty } : item
-      )
-    );
-  };
-
-  const removeItem = (productId: number) => {
-    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
-  };
-
-  // Calculations
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.product.priceNumeric * item.quantity,
-    0
-  );
-
-  const savings = cartItems.reduce((sum, item) => {
-    const origNumeric =
-      parseInt(item.product.originalPrice.replace(/[^\d]/g, ""), 10) ||
-      item.product.priceNumeric;
-    return sum + (origNumeric - item.product.priceNumeric) * item.quantity;
-  }, 0);
-
-  const grandTotal = subtotal;
+  const {
+    cart,
+    isLoading,
+    incrementQuantity,
+    decrementQuantity,
+    removeItem,
+    clearCart,
+  } = useCart();
 
   return (
     <div className="min-h-screen bg-white text-[#1F1F1F]">
@@ -65,12 +58,14 @@ export default function CartPage() {
               Shopping Cart
             </h1>
             <p className="text-base text-[#666666] leading-relaxed max-w-[600px]">
-              Review your selected furniture before checkout.
+              Review your selected handcrafted furniture before checkout.
             </p>
           </div>
 
           {/* Cart Content */}
-          {cartItems.length === 0 ? (
+          {isLoading ? (
+            <CartSkeleton />
+          ) : cart.items.length === 0 ? (
             <CartEmpty />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
@@ -78,12 +73,12 @@ export default function CartPage() {
               <div className="lg:col-span-2 flex flex-col gap-6">
                 <div className="flex items-center justify-between pb-4 border-b border-[#E5E5E5]">
                   <span className="text-sm font-medium text-[#666666]">
-                    Showing <strong>{cartItems.length}</strong> items in your cart
+                    Showing <strong>{cart.totalItems}</strong> item(s) in your cart
                   </span>
                   <button
                     type="button"
-                    onClick={() => setCartItems([])}
-                    className="text-xs font-semibold uppercase tracking-wider text-[#A67C52] hover:underline"
+                    onClick={clearCart}
+                    className="text-xs font-semibold uppercase tracking-wider text-[#A67C52] hover:underline cursor-pointer"
                   >
                     Clear Cart
                   </button>
@@ -91,55 +86,69 @@ export default function CartPage() {
 
                 {/* Cart Item Cards */}
                 <div className="flex flex-col gap-4">
-                  {cartItems.map(({ product, quantity }) => {
-                    const itemSubtotal = product.priceNumeric * quantity;
+                  {cart.items.map((item) => {
+                    const itemSubtotal = item.price * item.quantity;
+                    const formattedPrice = `₹${item.price.toLocaleString("en-IN")}`;
+                    const formattedSubtotal = `₹${itemSubtotal.toLocaleString("en-IN")}`;
+                    const itemKey = `${item.productId}_${item.variantId || "base"}`;
+
                     return (
                       <div
-                        key={product.id}
+                        key={itemKey}
                         className="group flex flex-col sm:flex-row items-stretch sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-white border border-[#E5E5E5]/80 shadow-sm hover:shadow-md transition-all duration-300 gap-4"
                       >
                         {/* Image & Main Info */}
                         <div className="flex items-center gap-4 flex-1">
                           <Link
-                            href={`/product/${product.id}`}
-                            className="relative h-24 w-24 sm:h-28 sm:w-28 flex-shrink-0 rounded-xl overflow-hidden bg-zinc-200/80 border border-[#E5E5E5]"
+                            href={`/product/${item.productId}`}
+                            className="relative h-24 w-24 sm:h-28 sm:w-28 flex-shrink-0 rounded-xl overflow-hidden bg-[#FAF8F5] border border-[#E5E5E5]"
                           >
                             <Image
-                              src={product.image}
-                              alt={product.name}
+                              src={item.image}
+                              alt={item.name}
                               fill
                               sizes="120px"
-                              className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                              className="object-contain p-1.5 group-hover:scale-105 transition-transform duration-500 ease-out"
                             />
                           </Link>
 
                           <div className="flex flex-col gap-1 flex-1">
                             <span className="text-xs font-semibold uppercase tracking-wider text-[#A67C52]">
-                              {product.category}
+                              Bené Decor
                             </span>
 
                             <Link
-                              href={`/product/${product.id}`}
+                              href={`/product/${item.productId}`}
                               className="font-[family-name:var(--font-playfair)] font-bold text-base sm:text-lg text-[#1F1F1F] hover:text-[#A67C52] transition-colors line-clamp-1"
                             >
-                              {product.name}
+                              {item.name}
                             </Link>
 
-                            {/* Prices */}
+                            {/* Color Variant Info */}
+                            {item.colorName && (
+                              <div className="flex items-center gap-1.5 text-xs text-[#1F1F1F] mt-0.5">
+                                <span className="font-semibold text-[#666666]">Color:</span>
+                                {item.colorCode && (
+                                  <span
+                                    className="w-3.5 h-3.5 rounded-full border border-black/20 inline-block shrink-0 shadow-xs"
+                                    style={{ backgroundColor: item.colorCode }}
+                                  />
+                                )}
+                                <span className="font-bold text-[#1F1F1F]">{item.colorName}</span>
+                              </div>
+                            )}
+
+                            {item.sku && (
+                              <span className="text-[11px] text-[#A67C52] font-mono font-medium">
+                                SKU: {item.sku}
+                              </span>
+                            )}
+
+                            {/* Price */}
                             <div className="flex items-baseline gap-2 mt-1">
                               <span className="font-bold text-base text-[#1F1F1F]">
-                                {product.price}
+                                {formattedPrice}
                               </span>
-                              {product.originalPrice && (
-                                <span className="text-xs text-[#666666] line-through">
-                                  {product.originalPrice}
-                                </span>
-                              )}
-                              {product.discount && (
-                                <span className="text-xs font-semibold text-[#16A34A]">
-                                  {product.discount}
-                                </span>
-                              )}
                             </div>
                           </div>
                         </div>
@@ -150,20 +159,20 @@ export default function CartPage() {
                           <div className="flex items-center border border-[#E5E5E5] rounded-xl px-3 py-1.5 bg-[#FAF8F5]">
                             <button
                               type="button"
-                              onClick={() => updateQuantity(product.id, quantity - 1)}
+                              onClick={() => decrementQuantity(item.productId, item.variantId)}
                               aria-label="Decrease quantity"
-                              className="text-base font-medium text-[#666666] hover:text-[#1F1F1F] px-1.5"
+                              className="text-base font-medium text-[#666666] hover:text-[#1F1F1F] px-1.5 cursor-pointer"
                             >
                               −
                             </button>
                             <span className="font-semibold text-sm text-[#1F1F1F] px-2">
-                              {quantity}
+                              {item.quantity}
                             </span>
                             <button
                               type="button"
-                              onClick={() => updateQuantity(product.id, quantity + 1)}
+                              onClick={() => incrementQuantity(item.productId, item.variantId)}
                               aria-label="Increase quantity"
-                              className="text-base font-medium text-[#666666] hover:text-[#1F1F1F] px-1.5"
+                              className="text-base font-medium text-[#666666] hover:text-[#1F1F1F] px-1.5 cursor-pointer"
                             >
                               +
                             </button>
@@ -173,16 +182,17 @@ export default function CartPage() {
                           <div className="flex flex-col items-end min-w-[90px]">
                             <span className="text-xs text-[#666666]">Subtotal</span>
                             <span className="font-bold text-base text-[#1F1F1F]">
-                              ₹{itemSubtotal.toLocaleString()}
+                              {formattedSubtotal}
                             </span>
                           </div>
 
                           {/* Remove Button */}
                           <button
                             type="button"
-                            onClick={() => removeItem(product.id)}
+                            onClick={() => removeItem(item.productId, item.variantId)}
                             aria-label="Remove item"
-                            className="p-2 text-[#666666] hover:text-red-600 transition-colors"
+                            className="p-2 text-[#666666] hover:text-red-600 transition-colors cursor-pointer"
+                            title="Remove item"
                           >
                             <svg
                               className="w-5 h-5"
@@ -208,9 +218,9 @@ export default function CartPage() {
               {/* Right Column: Order Summary */}
               <div className="w-full">
                 <OrderSummary
-                  subtotal={subtotal}
-                  savings={savings}
-                  grandTotal={grandTotal}
+                  subtotal={cart.subtotal}
+                  savings={0}
+                  grandTotal={cart.subtotal}
                 />
               </div>
             </div>

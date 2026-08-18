@@ -23,7 +23,7 @@ const FEATURED_ARTICLE: BlogPost = {
   category: "Living Room",
   date: "August 2, 2026",
   readTime: "6 min read",
-  image: "/images/collections/sofa.jpeg",
+  image: "/images/collections/sofa.jpg",
   excerpt:
     "Discover how to balance space proportions, velvet fabric textures, and solid teak wood polishes to curate a warm, luxurious living room centerpiece that lasts for generations.",
   featured: true,
@@ -76,7 +76,7 @@ const BLOG_POSTS: BlogPost[] = [
     category: "Office",
     date: "July 12, 2026",
     readTime: "4 min read",
-    image: "/images/collections/office.jpeg",
+    image: "/images/collections/office.png",
     excerpt:
       "Blend productivity with luxury. Discover handcrafted executive wooden desks and tufted leather chairs designed for workday comfort.",
   },
@@ -116,7 +116,7 @@ const BLOG_POSTS: BlogPost[] = [
     category: "Living Room",
     date: "June 21, 2026",
     readTime: "5 min read",
-    image: "/images/collections/sofa.jpeg",
+    image: "/images/collections/sofa.jpg",
     excerpt:
       "De-cluttering tips and selective furniture curation strategies to build calm, architectural interiors with natural wood accents.",
   },

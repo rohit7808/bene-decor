@@ -14,6 +14,7 @@ export interface Product {
   image: string;
   images: string[];
   shortDescription: string;
+  tags?: string[];
 }
 
 export const PRODUCTS_DATA: Product[] = [
@@ -33,7 +34,7 @@ export const PRODUCTS_DATA: Product[] = [
     image: "/images/products/Soaafa.jpeg",
     images: [
       "/images/products/Soaafa.jpeg",
-      "/images/collections/sofa.jpeg",
+      "/images/collections/sofa.jpg",
       "/images/products/chairr.jpeg",
       "/images/products/Pouffe.jpeg",
     ],
@@ -102,7 +103,7 @@ export const PRODUCTS_DATA: Product[] = [
     image: "/images/products/chairr.jpeg",
     images: [
       "/images/products/chairr.jpeg",
-      "/images/collections/office.jpeg",
+      "/images/collections/office.png",
       "/images/products/Soaafa.jpeg",
       "/images/products/dining.jpeg",
     ],

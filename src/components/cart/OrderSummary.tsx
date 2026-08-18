@@ -26,7 +26,7 @@ export default function OrderSummary({
         <div className="flex justify-between items-center">
           <span>Subtotal</span>
           <span className="font-semibold text-[#1F1F1F]">
-            ₹{subtotal.toLocaleString()}
+            ₹{subtotal.toLocaleString("en-IN")}
           </span>
         </div>
 
@@ -34,7 +34,7 @@ export default function OrderSummary({
         {savings > 0 && (
           <div className="flex justify-between items-center text-[#16A34A]">
             <span>Discount Savings</span>
-            <span className="font-semibold">− ₹{savings.toLocaleString()}</span>
+            <span className="font-semibold">− ₹{savings.toLocaleString("en-IN")}</span>
           </div>
         )}
 
@@ -56,7 +56,7 @@ export default function OrderSummary({
         <span className="font-bold text-lg text-[#1F1F1F]">Grand Total</span>
         <div className="flex flex-col items-end">
           <span className="font-bold text-2xl text-[#1F1F1F]">
-            ₹{grandTotal.toLocaleString()}
+            ₹{grandTotal.toLocaleString("en-IN")}
           </span>
           <span className="text-xs text-[#666666]">Inclusive of all taxes</span>
         </div>
@@ -64,12 +64,14 @@ export default function OrderSummary({
 
       {/* Action Buttons */}
       <div className="flex flex-col gap-3 mt-2">
-        <Button variant="primary" size="lg" className="w-full">
-          Proceed to Checkout
-        </Button>
+        <Link href="/checkout" className="w-full">
+          <Button variant="primary" size="lg" className="w-full cursor-pointer">
+            Proceed to Checkout
+          </Button>
+        </Link>
 
         <Link href="/shop" className="w-full">
-          <Button variant="outline" size="lg" className="w-full">
+          <Button variant="outline" size="lg" className="w-full cursor-pointer">
             Continue Shopping
           </Button>
         </Link>

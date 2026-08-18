@@ -93,7 +93,7 @@ const VIDEO_REVIEWS = [
     title: "Touring the Malhotra Villa with Béné Decor Living Collection",
     customer: "Vikram & Sunita Malhotra",
     city: "New Delhi",
-    thumbnail: "/images/collections/sofa.jpeg",
+    thumbnail: "/images/collections/sofa.jpg",
   },
   {
     id: 2,

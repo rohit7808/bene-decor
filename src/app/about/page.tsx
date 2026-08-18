@@ -43,22 +43,10 @@ const FEATURES = [
 
 const TEAM = [
   {
-    name: "Rajeshwar Sharma",
+    name: "Vaibhav Khandelwal",
     role: "Founder & CEO",
-    initials: "RS",
+    initials: "VK",
     bio: "Pioneered Bené Decor with a vision to bring traditional Indian woodworking heritage into luxury contemporary homes.",
-  },
-  {
-    name: "Aanya Singhania",
-    role: "Lead Interior Designer",
-    initials: "AS",
-    bio: "Combines modern ergonomic principles with timeless aesthetic warmth to curate award-winning collections.",
-  },
-  {
-    name: "Devendra Verma",
-    role: "Head of Customer Experience",
-    initials: "DV",
-    bio: "Dedicated to providing white-glove customer care, ensuring seamless custom orders and doorstep installation.",
   },
 ];
 
@@ -88,7 +76,7 @@ export default function AboutPage() {
             {/* Left: Luxury Showroom Image */}
             <div className="relative h-[360px] sm:h-[480px] w-full rounded-3xl overflow-hidden border border-[#E5E5E5] shadow-lg group">
               <Image
-                src="/images/collections/sofa.jpeg"
+                src="/images/collections/sofa.jpg"
                 alt="Bené Decor Luxury Showroom"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -178,11 +166,11 @@ export default function AboutPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          <div className="flex justify-center mb-20">
             {TEAM.map((member, idx) => (
               <div
                 key={idx}
-                className="flex flex-col items-center text-center p-6 sm:p-8 rounded-3xl bg-white border border-[#E5E5E5]/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 gap-4"
+                className="max-w-md w-full flex flex-col items-center text-center p-6 sm:p-8 rounded-3xl bg-white border border-[#E5E5E5]/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 gap-4"
               >
                 <div className="w-20 h-20 rounded-full bg-[#A67C52] text-white flex items-center justify-center font-bold text-2xl shadow-md border-2 border-white ring-2 ring-[#A67C52]/20">
                   {member.initials}

@@ -150,14 +150,14 @@ export default function ComparePage() {
                             {/* Image */}
                             <Link
                               href={`/product/${item.id}`}
-                              className="relative h-36 w-full rounded-xl overflow-hidden bg-zinc-200 border border-[#E5E5E5]"
+                              className="relative h-36 w-full rounded-xl overflow-hidden bg-[#FAF8F5] border border-[#E5E5E5]"
                             >
                               <Image
                                 src={item.image}
                                 alt={item.name}
                                 fill
                                 sizes="200px"
-                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
                               />
                             </Link>
 

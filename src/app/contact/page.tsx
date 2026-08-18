@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import ShowroomMapPreview from "@/components/common/ShowroomMapPreview";
 
 const FAQS = [
   {
@@ -30,6 +31,14 @@ const FAQS = [
 ];
 
 export default function ContactPage() {
+  const [storeSettings, setStoreSettings] = useState({
+    storeName: "Bene Decor Furniture",
+    supportEmail: "support@benedecor.in",
+    phone: "+91 98765 43210",
+    address: "Jaipur, Rajasthan, India",
+    businessHours: "Mon - Sat from 10am to 7pm",
+  });
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -38,6 +47,28 @@ export default function ContactPage() {
     message: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  React.useEffect(() => {
+    async function loadPublicSettings() {
+      try {
+        const res = await fetch("/api/settings");
+        const data = await res.json();
+        if (data.success && data.settings) {
+          setStoreSettings({
+            storeName: data.settings.storeName || "Bene Decor Furniture",
+            supportEmail: data.settings.supportEmail || "support@benedecor.in",
+            phone: data.settings.phone || "+91 98765 43210",
+            address: `${data.settings.address || "Jaipur"}, ${data.settings.city || "Rajasthan"}, ${data.settings.country || "India"}`,
+            businessHours: data.settings.businessHours || "Mon - Sat from 10am to 7pm",
+          });
+        }
+      } catch (err) {
+        console.error("Load public settings error:", err);
+      }
+    }
+
+    loadPublicSettings();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,10 +109,10 @@ export default function ContactPage() {
                     Showroom Address
                   </span>
                   <h3 className="font-[family-name:var(--font-playfair)] font-bold text-base text-[#1F1F1F]">
-                    Bene Decor Furniture
+                    {storeSettings.storeName}
                   </h3>
                   <p className="text-xs text-[#666666] leading-relaxed">
-                    Jaipur, Rajasthan, India
+                    {storeSettings.address}
                   </p>
                 </div>
               </div>
@@ -96,13 +127,13 @@ export default function ContactPage() {
                     Phone Support
                   </span>
                   <a
-                    href="tel:+919876543210"
+                    href={`tel:${storeSettings.phone}`}
                     className="font-bold text-base text-[#1F1F1F] hover:text-[#A67C52] transition-colors"
                   >
-                    +91 98765 43210
+                    {storeSettings.phone}
                   </a>
                   <p className="text-xs text-[#666666]">
-                    Mon - Sat from 10am to 7pm
+                    {storeSettings.businessHours}
                   </p>
                 </div>
               </div>
@@ -117,10 +148,10 @@ export default function ContactPage() {
                     Email Inquiries
                   </span>
                   <a
-                    href="mailto:support@benedecor.com"
+                    href={`mailto:${storeSettings.supportEmail}`}
                     className="font-bold text-base text-[#1F1F1F] hover:text-[#A67C52] transition-colors"
                   >
-                    support@benedecor.com
+                    {storeSettings.supportEmail}
                   </a>
                   <p className="text-xs text-[#666666]">
                     24/7 online email assistance
@@ -269,38 +300,8 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Google Map Section Placeholder */}
-          <div className="bg-[#FAF8F5] rounded-3xl p-6 sm:p-10 border border-[#E5E5E5]/80 shadow-sm mb-16 flex flex-col gap-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#A67C52]">
-                  EXPERIENCE OUR COLLECTIONS
-                </span>
-                <h2 className="font-[family-name:var(--font-playfair)] font-bold text-2xl sm:text-3xl text-[#1F1F1F]">
-                  Visit Our Showroom
-                </h2>
-              </div>
-              <span className="text-xs text-[#666666]">
-                Bene Decor Flagship • Jaipur, Rajasthan
-              </span>
-            </div>
-
-            {/* Static Map Card Graphic Placeholder */}
-            <div className="relative h-[300px] sm:h-[380px] w-full rounded-2xl overflow-hidden border border-[#E5E5E5] bg-gradient-to-br from-stone-200 via-amber-50 to-stone-300 flex items-center justify-center p-6 text-center shadow-inner">
-              <div className="flex flex-col items-center gap-3 p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-[#E5E5E5] max-w-md shadow-lg">
-                <span className="text-3xl text-[#A67C52]">📍</span>
-                <h3 className="font-[family-name:var(--font-playfair)] font-bold text-lg text-[#1F1F1F]">
-                  Bené Decor Flagship Studio
-                </h3>
-                <p className="text-xs text-[#666666]">
-                  Tonk Road, Near Chokhi Dhani, Jaipur, Rajasthan 302022
-                </p>
-                <div className="flex items-center gap-3 mt-1">
-                  <span className="text-xs font-semibold text-[#16A34A]">Open Today (10 AM - 7 PM)</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Interactive Google Map Location Preview */}
+          <ShowroomMapPreview className="mb-16" />
 
           {/* FAQ Section */}
           <div className="flex flex-col items-center text-center max-w-[800px] mx-auto gap-4 mb-12">

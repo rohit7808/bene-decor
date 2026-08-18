@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/layout/Footer";
+import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -78,11 +81,15 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className={`${inter.className} min-h-full flex flex-col justify-between`}>
-        <div className="flex-1">{children}</div>
+        <AuthProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <div className="flex-1">{children}</div>
+            </WishlistProvider>
+          </CartProvider>
+        </AuthProvider>
         <Footer />
       </body>
     </html>
   );
 }
-
-

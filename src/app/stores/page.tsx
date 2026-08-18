@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
+import ShowroomMapPreview from "@/components/common/ShowroomMapPreview";
 
 interface Store {
   id: number;
@@ -33,7 +34,7 @@ const STORES: Store[] = [
     email: "support@benedecor.com",
     hours: "Monday – Saturday: 10:00 AM – 7:00 PM",
     rating: 5,
-    image: "/images/collections/sofa.jpeg",
+    image: "/images/collections/sofa.jpg",
   },
 ];
 
@@ -290,51 +291,14 @@ export default function StoresPage() {
             )}
           </div>
 
-          {/* Interactive Google Map Section */}
-          <div className="bg-[#FAF8F5] rounded-3xl p-6 sm:p-10 border border-[#E5E5E5]/80 shadow-sm mb-20 flex flex-col gap-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#A67C52]">
-                  SHOWROOM LOCATION
-                </span>
-                <h2 className="font-[family-name:var(--font-playfair)] font-bold text-2xl sm:text-3xl text-[#1F1F1F]">
-                  Visit Our Showroom in Jaipur
-                </h2>
-              </div>
-              <span className="text-xs text-[#666666] bg-white px-3.5 py-1.5 rounded-full border border-[#E5E5E5]">
-                📍 Sitapura, Jaipur, Rajasthan
-              </span>
-            </div>
-
-            {/* Static Interactive Map Graphic Placeholder */}
-            <div className="relative h-[320px] sm:h-[420px] w-full rounded-2xl overflow-hidden border border-[#E5E5E5] bg-gradient-to-br from-stone-200 via-amber-50 to-stone-300 flex items-center justify-center p-6 text-center shadow-inner">
-              <div className="flex flex-col items-center gap-3 p-6 sm:p-8 bg-white/95 backdrop-blur-md rounded-2xl border border-[#E5E5E5] max-w-lg shadow-xl">
-                <span className="text-4xl text-[#A67C52]">📍</span>
-                <h3 className="font-[family-name:var(--font-playfair)] font-bold text-xl text-[#1F1F1F]">
-                  {store.name}
-                </h3>
-                <p className="text-xs sm:text-sm text-[#666666] leading-relaxed">
-                  {store.address}
-                </p>
-                <div className="flex flex-wrap justify-center gap-3 mt-2">
-                  <span className="text-xs font-semibold text-[#16A34A] bg-[#16A34A]/10 px-3 py-1 rounded-full">
-                    ✓ Open Today ({store.hours})
-                  </span>
-                  <a
-                    href={`https://maps.google.com/?q=${encodeURIComponent(
-                      store.name + " " + store.address
-                    )}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <span className="text-xs font-bold text-[#A67C52] underline">
-                      Open in Google Maps ↗
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Interactive Google Map Location Section */}
+          <ShowroomMapPreview
+            title={store.name}
+            subtitle="SHOWROOM LOCATION"
+            address={store.address}
+            hours={`Open Today (${store.hours})`}
+            className="mb-20"
+          />
 
           {/* Showroom Services Section (4 Cards) */}
           <div className="flex flex-col items-center text-center max-w-[800px] mx-auto gap-4 mb-12">

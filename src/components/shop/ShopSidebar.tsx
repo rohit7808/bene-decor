@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 export interface FilterState {
   category: string;
@@ -19,13 +19,13 @@ interface ShopSidebarProps {
   onCloseMobile?: () => void;
 }
 
-const CATEGORIES = [
+const DEFAULT_CATEGORIES = [
   "ALL",
-  "LIVING ROOM",
-  "DINING",
-  "BEDROOM",
-  "OFFICE",
-  "STORAGE",
+  "Living Room",
+  "Dining",
+  "Bedroom",
+  "Office",
+  "Storage",
 ];
 
 const MATERIALS = [
@@ -53,6 +53,25 @@ export default function ShopSidebar({
   isMobileOpen = false,
   onCloseMobile,
 }: ShopSidebarProps) {
+  const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await fetch("/api/categories");
+        const data = await res.json();
+        if (data.success && Array.isArray(data.categories) && data.categories.length > 0) {
+          const activeCatNames = data.categories.map((c: any) => c.name);
+          setCategories(["ALL", ...activeCatNames]);
+        }
+      } catch (err) {
+        console.error("Fetch shop sidebar categories error:", err);
+      }
+    }
+
+    loadCategories();
+  }, []);
+
   const content = (
     <div className="flex flex-col gap-8 text-[#1F1F1F]">
       {/* Header & Reset */}
@@ -75,9 +94,11 @@ export default function ShopSidebar({
           Category
         </h3>
         <div className="flex flex-col gap-2">
-          {CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const isSelected =
-              cat === "ALL" ? filters.category === "" : filters.category === cat;
+              cat === "ALL"
+                ? !filters.category
+                : filters.category.toUpperCase() === cat.toUpperCase();
             return (
               <button
                 key={cat}

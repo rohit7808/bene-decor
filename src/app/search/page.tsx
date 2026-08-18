@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, Suspense } from "react";
+import React, { useState, useEffect, useMemo, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -8,7 +8,11 @@ import Navbar from "@/components/layout/Navbar";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import SearchBar from "@/components/ui/SearchBar";
+import { fetchJsonCached } from "@/lib/apiClient";
 import { PRODUCTS_DATA, Product } from "@/data/products";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
+import ProductCard from "@/components/product/ProductCard";
 
 const CATEGORIES = [
   "ALL",
@@ -22,16 +26,62 @@ const CATEGORIES = [
 function SearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   // Read initial query parameter ?q=
   const initialQuery = searchParams.get("q") || "";
   const [searchInput, setSearchInput] = useState(initialQuery);
+  const [allProducts, setAllProducts] = useState<Product[]>(PRODUCTS_DATA);
 
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState("");
   const [maxPrice, setMaxPrice] = useState(100000);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [minRating, setMinRating] = useState(0);
+
+  // Sync search input when URL query changes
+  useEffect(() => {
+    setSearchInput(initialQuery);
+  }, [initialQuery]);
+
+  // Fetch dynamic products from MongoDB (cached)
+  useEffect(() => {
+    async function fetchStoreProducts() {
+      try {
+        const res = await fetchJsonCached<{ success: boolean; products: any[] }>("/api/products?limit=100");
+        if (res.success && res.data && Array.isArray(res.data.products) && res.data.products.length > 0) {
+          const formatted: Product[] = res.data.products.map((p: any) => ({
+            id: p._id || p.id,
+            name: p.name,
+            category: (p.category || "LIVING ROOM").toUpperCase(),
+            price: `₹${(p.price || 0).toLocaleString("en-IN")}`,
+            priceNumeric: p.price || 0,
+            originalPrice: p.originalPrice ? `₹${p.originalPrice.toLocaleString("en-IN")}` : "",
+            discount: p.discount ? `${p.discount}% OFF` : "",
+            discountNumeric: p.discount || 0,
+            rating: Math.min(5, Math.max(1, Math.round(p.rating || 5))),
+            reviewsCount: p.reviewCount || p.reviewsCount || 12,
+            image: p.image || (Array.isArray(p.images) && p.images[0]) || "/images/collections/sofa.jpg",
+            images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [p.image || "/images/collections/sofa.jpg"],
+            shortDescription: p.description || p.shortDescription || "",
+            material: p.material || "Solid Wood",
+            inStock: p.stock === undefined || p.stock > 0,
+            tags: Array.isArray(p.tags) ? p.tags : [],
+          }));
+
+          // Merge DB products with static products (avoiding duplicate IDs)
+          const dbIds = new Set(formatted.map((f) => f.id));
+          const staticFiltered = PRODUCTS_DATA.filter((sp) => !dbIds.has(sp.id));
+          setAllProducts([...formatted, ...staticFiltered]);
+        }
+      } catch (err) {
+        console.error("Fetch products error on search page:", err);
+      }
+    }
+
+    fetchStoreProducts();
+  }, []);
 
   // Handle Search Submission
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -47,22 +97,27 @@ function SearchContent() {
   const filteredProducts = useMemo(() => {
     const queryTerm = initialQuery.toLowerCase().trim();
 
-    return PRODUCTS_DATA.filter((product) => {
-      // Query Matching
+    return allProducts.filter((product) => {
+      // Query Matching (case-insensitive across name, category, material, description, tags)
       if (queryTerm) {
         const nameMatch = product.name.toLowerCase().includes(queryTerm);
         const categoryMatch = product.category.toLowerCase().includes(queryTerm);
-        const materialMatch = product.material.toLowerCase().includes(queryTerm);
-        const descMatch = product.shortDescription.toLowerCase().includes(queryTerm);
+        const materialMatch = (product.material || "").toLowerCase().includes(queryTerm);
+        const descMatch = (product.shortDescription || "").toLowerCase().includes(queryTerm);
+        const tagsMatch = Array.isArray(product.tags)
+          ? product.tags.some((tag) => tag.toLowerCase().includes(queryTerm))
+          : false;
 
-        if (!nameMatch && !categoryMatch && !materialMatch && !descMatch) {
+        if (!nameMatch && !categoryMatch && !materialMatch && !descMatch && !tagsMatch) {
           return false;
         }
       }
 
       // Category Filter
-      if (selectedCategory && product.category !== selectedCategory) {
-        return false;
+      if (selectedCategory && selectedCategory !== "ALL") {
+        if (product.category.toUpperCase() !== selectedCategory.toUpperCase()) {
+          return false;
+        }
       }
 
       // Price Filter
@@ -82,7 +137,7 @@ function SearchContent() {
 
       return true;
     });
-  }, [initialQuery, selectedCategory, maxPrice, inStockOnly, minRating]);
+  }, [allProducts, initialQuery, selectedCategory, maxPrice, inStockOnly, minRating]);
 
   // Reset Filters
   const handleResetFilters = () => {
@@ -121,7 +176,7 @@ function SearchContent() {
               placeholder="Search furniture, sofas, tables..."
               className="flex-1"
             />
-            <Button type="submit" variant="primary" size="md">
+            <Button type="submit" variant="primary" size="md" className="cursor-pointer">
               Search
             </Button>
           </div>
@@ -139,7 +194,7 @@ function SearchContent() {
             <button
               type="button"
               onClick={handleResetFilters}
-              className="text-xs font-semibold uppercase tracking-wider text-[#A67C52] hover:underline"
+              className="text-xs font-semibold uppercase tracking-wider text-[#A67C52] hover:underline cursor-pointer"
             >
               Reset
             </button>
@@ -158,7 +213,7 @@ function SearchContent() {
                   key={cat}
                   type="button"
                   onClick={() => setSelectedCategory(cat === "ALL" ? "" : cat)}
-                  className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors flex items-center justify-between ${
+                  className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors flex items-center justify-between cursor-pointer ${
                     isSelected
                       ? "bg-[#A67C52] text-white font-medium"
                       : "text-[#666666] hover:bg-[#FAF8F5] hover:text-[#1F1F1F]"
@@ -220,7 +275,7 @@ function SearchContent() {
                   key={stars}
                   type="button"
                   onClick={() => setMinRating(isSelected ? 0 : stars)}
-                  className={`flex items-center gap-2 text-sm text-left p-1.5 rounded-lg transition-colors ${
+                  className={`flex items-center gap-2 text-sm text-left p-1.5 rounded-lg transition-colors cursor-pointer ${
                     isSelected
                       ? "bg-[#A67C52]/10 text-[#A67C52] font-semibold"
                       : "text-[#666666] hover:text-[#1F1F1F]"
@@ -260,12 +315,12 @@ function SearchContent() {
               </h2>
 
               <p className="text-base text-[#666666] max-w-md leading-relaxed">
-                Try another keyword or browse our collections.
+                We couldn't find any products matching your search. Try another keyword or explore all furniture.
               </p>
 
-              <Link href="/" className="mt-2">
+              <Link href="/shop" className="mt-2">
                 <Button variant="primary" size="lg">
-                  Continue Shopping
+                  Explore All Collections →
                 </Button>
               </Link>
             </div>
@@ -278,82 +333,7 @@ function SearchContent() {
               {/* Grid of Product Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                 {filteredProducts.map((product) => (
-                  <Link
-                    key={product.id}
-                    href={`/product/${product.id}`}
-                    className="group relative flex flex-col rounded-2xl bg-white overflow-hidden border border-[#E5E5E5]/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer"
-                  >
-                    {/* Image Container */}
-                    <div className="relative h-[280px] w-full overflow-hidden bg-zinc-200/80">
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500 ease-out"
-                      />
-
-                      {/* Wishlist Icon */}
-                      <div className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/90 backdrop-blur-sm text-[#1F1F1F] hover:text-[#A67C52] transition-colors duration-300 shadow-sm">
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.8"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-
-                    {/* Card Content */}
-                    <div className="flex flex-col flex-1 p-5 gap-2 justify-between">
-                      <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-[#A67C52]">
-                          {product.category}
-                        </span>
-
-                        <h3 className="font-[family-name:var(--font-playfair)] font-bold text-base sm:text-lg text-[#1F1F1F] group-hover:text-[#A67C52] transition-colors duration-300 line-clamp-2">
-                          {product.name}
-                        </h3>
-
-                        <div className="flex items-center gap-1 text-xs text-[#A67C52]">
-                          <span>{"★".repeat(product.rating)}</span>
-                          <span className="text-[#666666] ml-1">
-                            ({product.reviewsCount})
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Pricing & Add to Cart */}
-                      <div className="mt-3 flex items-center justify-between pt-3 border-t border-[#E5E5E5]/60 gap-2">
-                        <div className="flex items-baseline gap-1.5 flex-wrap">
-                          <span className="font-bold text-lg text-[#1F1F1F]">
-                            {product.price}
-                          </span>
-                          {product.originalPrice && (
-                            <span className="text-xs text-[#666666] line-through">
-                              {product.originalPrice}
-                            </span>
-                          )}
-                          {product.discount && (
-                            <span className="text-xs font-semibold text-[#16A34A]">
-                              {product.discount}
-                            </span>
-                          )}
-                        </div>
-
-                        <Button variant="primary" size="sm">
-                          Add to Cart
-                        </Button>
-                      </div>
-                    </div>
-                  </Link>
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             </div>

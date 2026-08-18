@@ -51,13 +51,13 @@ export default function CheckoutSummary({ items }: CheckoutSummaryProps) {
             key={product.id}
             className="flex items-center gap-3 pb-3 border-b border-[#E5E5E5]/50"
           >
-            <div className="relative h-16 w-16 flex-shrink-0 rounded-xl overflow-hidden bg-zinc-200/80 border border-[#E5E5E5]">
+            <div className="relative h-16 w-16 flex-shrink-0 rounded-xl overflow-hidden bg-[#FAF8F5] border border-[#E5E5E5]">
               <Image
                 src={product.image}
                 alt={product.name}
                 fill
                 sizes="80px"
-                className="object-cover"
+                className="object-contain p-1"
               />
             </div>
             <div className="flex flex-col flex-1 gap-0.5">

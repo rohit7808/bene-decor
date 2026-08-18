@@ -1,15 +1,17 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Container from "../ui/Container";
 
 const COLLECTIONS = [
   {
     id: 1,
-    image: "/images/collections/sofa.jpeg",
+    image: "/images/collections/sofa.jpg",
     category: "LIVING ROOM",
     title: "Luxury Sofas",
     description:
       "Elegant handcrafted sofas designed for comfort and timeless living spaces.",
+    href: "/shop/living-room",
   },
   {
     id: 2,
@@ -18,6 +20,7 @@ const COLLECTIONS = [
     title: "Dining Tables",
     description:
       "Premium solid wood dining tables crafted for memorable family moments.",
+    href: "/shop/dining",
   },
   {
     id: 3,
@@ -26,14 +29,16 @@ const COLLECTIONS = [
     title: "Designer Beds",
     description:
       "Modern handcrafted beds combining beauty, durability and relaxation.",
+    href: "/shop/bedroom",
   },
   {
     id: 4,
-    image: "/images/collections/office.jpeg",
+    image: "/images/collections/office.png",
     category: "OFFICE",
     title: "Office Furniture",
     description:
       "Professional workspaces built with premium craftsmanship and ergonomic comfort.",
+    href: "/shop/office",
   },
 ];
 
@@ -65,18 +70,19 @@ export default function FeaturedCollections() {
         {/* Collections Grid */}
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {COLLECTIONS.map((collection) => (
-            <div
+            <Link
               key={collection.id}
+              href={collection.href}
               className="group flex flex-col h-[420px] rounded-2xl bg-[#FAF8F5] overflow-hidden cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-in-out border border-[#E5E5E5]/60"
             >
               {/* Image Container (280px height with Next.js Image fill & hover zoom) */}
-              <div className="relative h-[280px] w-full overflow-hidden bg-zinc-200/80">
+              <div className="relative h-[280px] w-full overflow-hidden bg-[#FAF8F5]">
                 <Image
                   src={collection.image}
                   alt={collection.title}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-500 ease-out"
+                  className="object-contain p-3 rounded-t-2xl group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
               </div>
 
@@ -97,7 +103,7 @@ export default function FeaturedCollections() {
                   {collection.description}
                 </p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </Container>

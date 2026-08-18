@@ -130,14 +130,14 @@ export default function Footer() {
               </p>
               <p className="flex items-center gap-2">
                 <span className="text-[#A67C52] shrink-0 font-bold">📞</span>
-                <a href="tel:+919876543210" className="hover:text-[#A67C52] transition-colors font-medium">
-                  +91 98765 43210
+                <a href="tel:+919928348586" className="hover:text-[#A67C52] transition-colors font-medium">
+                  +91 9928348586
                 </a>
               </p>
               <p className="flex items-center gap-2">
                 <span className="text-[#A67C52] shrink-0 font-bold">📧</span>
-                <a href="mailto:support@benedecor.com" className="hover:text-[#A67C52] transition-colors font-medium">
-                  support@benedecor.com
+                <a href="mailto:saadgifurniture@gmail.com" className="hover:text-[#A67C52] transition-colors font-medium">
+                  saadgifurniture@gmail.com
                 </a>
               </p>
               <p className="flex items-center gap-2 text-xs">

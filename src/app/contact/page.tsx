@@ -33,8 +33,8 @@ const FAQS = [
 export default function ContactPage() {
   const [storeSettings, setStoreSettings] = useState({
     storeName: "Bene Decor Furniture",
-    supportEmail: "support@benedecor.in",
-    phone: "+91 98765 43210",
+    supportEmail: "saadgifurniture@gmail.com",
+    phone: "+91 9928348586",
     address: "Jaipur, Rajasthan, India",
     businessHours: "Mon - Sat from 10am to 7pm",
   });
@@ -56,8 +56,8 @@ export default function ContactPage() {
         if (data.success && data.settings) {
           setStoreSettings({
             storeName: data.settings.storeName || "Bene Decor Furniture",
-            supportEmail: data.settings.supportEmail || "support@benedecor.in",
-            phone: data.settings.phone || "+91 98765 43210",
+            supportEmail: data.settings.supportEmail || "saadgifurniture@gmail.com",
+            phone: data.settings.phone || "+91 9928348586",
             address: `${data.settings.address || "Jaipur"}, ${data.settings.city || "Rajasthan"}, ${data.settings.country || "India"}`,
             businessHours: data.settings.businessHours || "Mon - Sat from 10am to 7pm",
           });

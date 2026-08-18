@@ -14,8 +14,8 @@ export default function AdminSettingsPage() {
     storeName: "Bené Decor",
     logo: "/images/logo.png",
     businessEmail: "marketing@benedecor.in",
-    supportEmail: "support@benedecor.in",
-    phone: "+91 98765 43210",
+    supportEmail: "saadgifurniture@gmail.com",
+    phone: "+91 9928348586",
     websiteUrl: "https://benedecor.in",
     address: "Jaipur Showroom & Artisan Studio",
     city: "Jaipur",
@@ -25,7 +25,7 @@ export default function AdminSettingsPage() {
     description:
       "Handcrafted luxury solid wood furniture made with passion, precision and finest materials in Jaipur, India.",
 
-    whatsappNumber: "+91 98765 43210",
+    whatsappNumber: "+91 9928348586",
     businessHours: "Mon - Sat: 10:00 AM - 7:00 PM IST",
     facebookUrl: "https://facebook.com/benedecor",
     instagramUrl: "https://instagram.com/benedecor",
@@ -676,7 +676,7 @@ export default function AdminSettingsPage() {
                 </div>
                 <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E5E5E5] flex flex-col">
                   <span className="text-[#666666]">Admin Email</span>
-                  <strong className="text-[#1F1F1F] mt-0.5">{user?.email || "admin@benedecor.com"}</strong>
+                  <strong className="text-[#1F1F1F] mt-0.5">{user?.email || "saadgifurniture@gmail.com"}</strong>
                 </div>
               </div>
             </div>

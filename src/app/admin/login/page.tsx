@@ -243,7 +243,7 @@ export default function AdminLoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@benedecor.com"
+                  placeholder="saadgifurniture@gmail.com"
                   required
                   className="w-full px-4 py-2.5 rounded-xl border border-[#374151] bg-[#111827] text-white focus:outline-none focus:border-[#A67C52]"
                 />

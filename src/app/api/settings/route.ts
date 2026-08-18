@@ -22,9 +22,9 @@ export async function GET() {
     const publicSettings = {
       storeName: settings.storeName || "Bené Decor",
       logo: settings.logo || "/images/logo.png",
-      supportEmail: settings.supportEmail || "support@benedecor.in",
-      phone: settings.phone || "+91 98765 43210",
-      whatsappNumber: settings.whatsappNumber || "+91 98765 43210",
+      supportEmail: settings.supportEmail || "saadgifurniture@gmail.com",
+      phone: settings.phone || "+91 9928348586",
+      whatsappNumber: settings.whatsappNumber || "+91 9928348586",
       address: settings.address || "Jaipur Showroom & Artisan Studio",
       city: settings.city || "Jaipur",
       state: settings.state || "Rajasthan",

@@ -27,12 +27,12 @@ export async function POST(request: NextRequest) {
 
     let user = await User.findOne({ email: normalizedEmail });
 
-    // 4. Auto-seed default admin account if logging in as admin@benedecor.com and account doesn't exist yet
-    if (!user && normalizedEmail === "admin@benedecor.com") {
-      const hashedPassword = await hashPassword("admin123");
+    // 4. Auto-seed default admin account if logging in as saadgifurniture@gmail.com and account doesn't exist yet
+    if (!user && normalizedEmail === "saadgifurniture@gmail.com") {
+      const hashedPassword = await hashPassword(process.env.ADMIN_INITIAL_PASSWORD || "Vaibhav@21");
       user = await User.create({
         name: "Administrator",
-        email: "admin@benedecor.com",
+        email: "saadgifurniture@gmail.com",
         password: hashedPassword,
         role: "admin",
         isActive: true,

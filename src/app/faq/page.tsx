@@ -73,7 +73,7 @@ const FAQS_DATA: FAQItem[] = [
     category: "Returns",
     question: "How do I initiate a return or replacement?",
     answer:
-      "Contact our support concierge via the 'Contact Us' page or call +91 98765 43210 within 10 days of delivery with your Order ID and photo verification.",
+      "Contact our support concierge via the 'Contact Us' page or call +91 9928348586 within 10 days of delivery with your Order ID and photo verification.",
   },
   {
     id: "ret-3",
@@ -96,7 +96,7 @@ const FAQS_DATA: FAQItem[] = [
     category: "Warranty",
     question: "How do I claim warranty coverage?",
     answer:
-      "To claim warranty coverage, email support@benedecor.com with photographs of the item and your purchase invoice. Our repair specialist will inspect or replace the item.",
+      "To claim warranty coverage, email saadgifurniture@gmail.com with photographs of the item and your purchase invoice. Our repair specialist will inspect or replace the item.",
   },
 
   // Custom Furniture

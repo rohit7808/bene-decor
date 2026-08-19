@@ -531,15 +531,6 @@ export default function AdminSettingsPage() {
             </div>
 
             <div className="flex flex-col gap-3 pt-2 border-t border-[#E5E5E5] text-xs sm:text-sm">
-              <label className="flex items-center gap-2 cursor-pointer font-bold text-[#1F1F1F]">
-                <input
-                  type="checkbox"
-                  checked={settingsForm.enableCOD}
-                  onChange={(e) => handleChange("enableCOD", e.target.checked)}
-                  className="w-4 h-4 accent-[#A67C52]"
-                />
-                <span>Enable Cash on Delivery (COD) at checkout</span>
-              </label>
 
               <label className="flex items-center gap-2 cursor-pointer font-bold text-[#1F1F1F]">
                 <input

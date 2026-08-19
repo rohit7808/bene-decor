@@ -53,7 +53,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-3 shrink-0 group">
           <Logo width={52} height={52} priority />
           <span className="font-[family-name:var(--font-playfair)] font-bold text-xl sm:text-2xl text-[#1F1F1F] group-hover:text-[#A67C52] transition-colors select-none tracking-tight">
-            Béné Decor
+            Bene Decor
           </span>
         </Link>
 

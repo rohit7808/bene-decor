@@ -283,37 +283,6 @@ export default function CheckoutForm({
             </div>
             <span className="text-xl">🏦</span>
           </label>
-
-          {/* Cash on Delivery */}
-          <label
-            onClick={() =>
-              setFormData((prev) => ({ ...prev, paymentMethod: "cod" }))
-            }
-            className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${
-              formData.paymentMethod === "cod"
-                ? "border-[#A67C52] bg-[#FAF8F5]"
-                : "border-[#E5E5E5] bg-white hover:border-[#A67C52]/50"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <input
-                type="radio"
-                name="paymentMethod"
-                checked={formData.paymentMethod === "cod"}
-                onChange={() => {}}
-                className="w-4 h-4 accent-[#A67C52]"
-              />
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm text-[#1F1F1F]">
-                  Cash on Delivery (COD)
-                </span>
-                <span className="text-xs text-[#666666]">
-                  Pay when your furniture arrives
-                </span>
-              </div>
-            </div>
-            <span className="text-xl">💵</span>
-          </label>
         </div>
       </div>
     </div>

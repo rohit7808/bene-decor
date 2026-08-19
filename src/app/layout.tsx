@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/layout/Footer";
+import FloatingCallButton from "@/components/common/FloatingCallButton";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
@@ -85,6 +86,7 @@ export default function RootLayout({
           <CartProvider>
             <WishlistProvider>
               <div className="flex-1">{children}</div>
+              <FloatingCallButton />
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>

@@ -156,11 +156,11 @@ const OrderSchema = new Schema<IOrder>(
     paymentMethod: {
       type: String,
       enum: {
-        values: ["COD", "Razorpay", "Card", "UPI", "NetBanking"],
+        values: ["Razorpay", "online", "Card", "UPI", "NetBanking", "COD"],
         message: "Invalid payment method",
       },
       required: [true, "Payment method is required"],
-      default: "COD",
+      default: "Razorpay",
     },
     paymentStatus: {
       type: String,

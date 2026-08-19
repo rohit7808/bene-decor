@@ -121,7 +121,7 @@ const FAQS_DATA: FAQItem[] = [
     category: "Payments",
     question: "What payment methods are accepted?",
     answer:
-      "We accept Credit/Debit Cards (Visa, Mastercard, RuPay, Amex), UPI (Google Pay, PhonePe, Paytm), Net Banking across all banks, and Cash on Delivery (COD).",
+      "We accept Credit/Debit Cards (Visa, Mastercard, RuPay, Amex), UPI (Google Pay, PhonePe, Paytm), and Net Banking across all major Indian banks.",
   },
   {
     id: "pay-2",
@@ -133,9 +133,9 @@ const FAQS_DATA: FAQItem[] = [
   {
     id: "pay-3",
     category: "Payments",
-    question: "Is Cash on Delivery available for all orders?",
+    question: "Are online payment transactions instant?",
     answer:
-      "COD is supported nationwide up to ₹50,000. For higher value custom pieces, a small partial advance token payment is requested to start crafting.",
+      "Yes! Upon successful online payment, your order confirmation and invoice are generated instantly and sent to your registered email address.",
   },
 ];
 

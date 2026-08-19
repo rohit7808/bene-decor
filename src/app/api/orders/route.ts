@@ -132,15 +132,32 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    // 0. Enforce strict authentication check on server
     const user = await getAuthUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized. Please log in to place an order." },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
 
     const {
       items,
       shippingAddress,
-      paymentMethod = "COD",
+      paymentMethod = "Razorpay",
       notes = "",
     } = body;
+
+    // Reject any Cash on Delivery (COD) order attempts
+    const normalizedPaymentMethod = String(paymentMethod).trim().toUpperCase();
+    if (normalizedPaymentMethod === "COD" || normalizedPaymentMethod.includes("CASH")) {
+      return NextResponse.json(
+        { error: "Cash on Delivery (COD) is no longer available. Only Online Payment is accepted." },
+        { status: 400 }
+      );
+    }
 
     // 1. Validate required fields
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -263,12 +280,12 @@ export async function POST(request: NextRequest) {
     // 5. Create Order Document in MongoDB
     const newOrder = new Order({
       orderNumber: generatedOrderNumber,
-      user: user ? user.userId : "guest_user",
+      user: user.userId,
       items: validatedItems,
       shippingAddress: {
         fullName: shippingAddress.fullName.trim(),
         phone: shippingAddress.phone.trim(),
-        email: shippingAddress.email ? shippingAddress.email.trim() : (user ? user.email : ""),
+        email: shippingAddress.email ? shippingAddress.email.trim() : user.email,
         address: shippingAddress.address.trim(),
         city: shippingAddress.city.trim(),
         state: shippingAddress.state.trim(),

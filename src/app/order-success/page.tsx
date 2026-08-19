@@ -135,9 +135,7 @@ export default function OrderSuccessPage({ searchParams }: PageProps) {
                   <div className="flex flex-col">
                     <span className="text-xs text-[#666666]">Payment Method</span>
                     <span className="font-semibold text-sm text-[#1F1F1F]">
-                      {order.paymentMethod === "COD"
-                        ? "Cash on Delivery (COD)"
-                        : order.paymentMethod}
+                      {order.paymentMethod || "Online Payment (Razorpay)"}
                     </span>
                   </div>
 

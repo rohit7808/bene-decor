@@ -21,7 +21,7 @@ const FAQS = [
   {
     question: "What payment methods are accepted?",
     answer:
-      "We accept all major Credit/Debit Cards, UPI (Google Pay, PhonePe, Paytm), Net Banking across all Indian banks, and Cash on Delivery (COD).",
+      "We accept all major Credit/Debit Cards, UPI (Google Pay, PhonePe, Paytm), and Net Banking across all Indian banks via 100% secure online checkout.",
   },
   {
     question: "Do you provide installation?",

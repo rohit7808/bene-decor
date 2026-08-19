@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
 
-export default function CustomerLoginPage() {
+function CustomerLoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || searchParams.get("callbackUrl") || "/profile";
   const { login, verifyOtp, resendOtp, user, isAuthenticated, isLoading } = useAuth();
 
   const [step, setStep] = useState<"LOGIN" | "OTP">("LOGIN");
@@ -40,10 +42,10 @@ export default function CustomerLoginPage() {
       if (user.role === "admin") {
         router.push("/admin");
       } else {
-        router.push("/profile");
+        router.push(redirectUrl);
       }
     }
-  }, [isLoading, isAuthenticated, user, router]);
+  }, [isLoading, isAuthenticated, user, router, redirectUrl]);
 
   // Countdown timer for Resend OTP button
   useEffect(() => {
@@ -88,7 +90,7 @@ export default function CustomerLoginPage() {
         setCanResend(false);
         setTimeout(() => inputRefs[0].current?.focus(), 100);
       } else if (res.success) {
-        router.push("/profile");
+        router.push(redirectUrl);
       } else {
         setErrorMsg(res.error || "Invalid email address or password.");
       }
@@ -156,7 +158,7 @@ export default function CustomerLoginPage() {
         if (res.user.role === "admin") {
           router.push("/admin");
         } else {
-          router.push("/profile");
+          router.push(redirectUrl);
         }
       } else {
         setErrorMsg(res.error || "Invalid verification code. Please check and try again.");
@@ -390,5 +392,24 @@ export default function CustomerLoginPage() {
         </Container>
       </main>
     </div>
+  );
+}
+
+export default function CustomerLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#FAF8F5] text-[#1F1F1F]">
+          <Navbar />
+          <Container>
+            <div className="py-20 text-center text-xs text-[#666666] animate-pulse">
+              ⏳ Loading authentication parameters...
+            </div>
+          </Container>
+        </div>
+      }
+    >
+      <CustomerLoginForm />
+    </Suspense>
   );
 }

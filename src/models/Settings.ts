@@ -78,7 +78,7 @@ const SettingsSchema = new Schema<ISettings>(
     minOrderAmount: { type: Number, default: 0, min: 0 },
     freeShippingThreshold: { type: Number, default: 0, min: 0 }, // 0 = Free shipping for all orders
     defaultDeliveryCharge: { type: Number, default: 0, min: 0 },
-    enableCOD: { type: Boolean, default: true },
+    enableCOD: { type: Boolean, default: false },
     enableOnlinePayment: { type: Boolean, default: true },
     cancellationWindowHours: { type: Number, default: 24, min: 0 },
     estimatedDeliveryDays: { type: String, default: "5 to 7 business days", trim: true },

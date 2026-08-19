@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRazorpayInstance } from "@/lib/razorpay";
+import { getAuthUser } from "@/lib/auth";
 
 /**
  * POST /api/payment/create-order
@@ -7,6 +8,14 @@ import { getRazorpayInstance } from "@/lib/razorpay";
  */
 export async function POST(request: NextRequest) {
   try {
+    const user = await getAuthUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized. Please log in to place an order." },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { amount, currency = "INR", receipt = `rcpt_${Date.now()}` } = body;
 

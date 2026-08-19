@@ -41,7 +41,7 @@ export async function GET() {
       minOrderAmount: settings.minOrderAmount || 0,
       freeShippingThreshold: settings.freeShippingThreshold || 0,
       defaultDeliveryCharge: settings.defaultDeliveryCharge || 0,
-      enableCOD: settings.enableCOD !== false,
+      enableCOD: false,
       enableOnlinePayment: settings.enableOnlinePayment !== false,
       estimatedDeliveryDays: settings.estimatedDeliveryDays || "5 to 7 business days",
       cancellationWindowHours: settings.cancellationWindowHours || 24,
